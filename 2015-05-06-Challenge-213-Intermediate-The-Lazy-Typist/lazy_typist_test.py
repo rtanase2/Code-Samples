@@ -135,7 +135,16 @@ class find_effort_tests(unittest.TestCase):
             Total effort: 1")
 
 def main():
-    unittest.main()
+    """Runs all test cases"""
+    # Contains all names of test categories (classes) in string form
+    test_class_names = ["find_effort_tests"]
+    # Contains all classes with test cases
+    tests = [find_effort_tests]
+    # Parses through all test classes and and prints them out
+    for index in range(0, len(tests)):
+        print "\n###### Running {0} ######\n".format(test_class_names[index])
+        suite = unittest.TestLoader().loadTestsFromTestCase(tests[index])
+        unittest.TextTestRunner(verbosity=2).run(suite)
 
 if __name__ == '__main__':
     main()
