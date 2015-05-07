@@ -13,126 +13,42 @@ class find_effort_tests(unittest.TestCase):
     def testStringLen1(self):
         self.assertEqual(
             find_effort_greedy("a"), 
-            "A: Use left hand\n\
-            Total effort: 0")
+            "A: Use left hand\nTotal effort: 0")
 
     def testStringLen2(self):
         self.assertEqual(
             find_effort_greedy("ab"),
-            "A: Use left hand\n\
-            B: Use right hand\n\
-            Total effort: 0")
+            "A: Use left hand\nB: Use right hand\nTotal effort: 0")
 
     def testUpperCaseLetter(self):
         self.assertEqual(
             find_effort_greedy("T"), 
-            "Shift: Use left hand\n\
-            T: Use right hand\n\
-            Total effort: 0")
+            "Shift: Use left hand\nT: Use right hand\nTotal effort: 0")
 
     def testRegString1(self):
         self.assertEqual(
             find_effort_greedy("The quick brown Fox"),
-            "Shift: Use left hand\n\
-            T: Use right hand\n\
-            H: Move right hand from T (effort: 2)\n\
-            E: Move left hand from Shift (effort: 4)\n\
-            Space: Move right hand from H (effort: 2)\n\
-            Q: Move left hand from E (effort: 2)\n\
-            U: Move right hand from Space (effort: 4)\n\
-            I: Move right hand from U (effort: 1)\n\
-            C: Move left hand from Q (effort: 5)\n\
-            K: Move right hand from I (effort: 1)\n\
-            Space: Move left hand from C (effort: 1)\n\
-            B: Move left hand from Space (effort: 3)\n\
-            R: Move left hand from B (effort: 4)\n\
-            O: Move right hand from K (effort: 2)\n\
-            W: Move left hand from R (effort: 2)\n\
-            N: Move right hand from O (effort: 4)\n\
-            Space: Move right hand from N (effort: 1)\n\
-            Shift: Move left hand from W (effort: 3)\n\
-            F: Move right hand from Space (effort: 5)\n\
-            O: Move right hand from F (effort: 6)\n\
-            X: Move left hand from Shift (effort: 2)\n\
-            Total effort: 54")
+            "Shift: Use left hand\nT: Use right hand\nH: Move right hand from T (effort: 2)\nE: Move left hand from Shift (effort: 4)\nSpace: Move right hand from H (effort: 2)\nQ: Move left hand from E (effort: 2)\nU: Move right hand from Space (effort: 4)\nI: Move right hand from U (effort: 1)\nC: Move left hand from Q (effort: 5)\nK: Move right hand from I (effort: 1)\nSpace: Move left hand from C (effort: 1)\nB: Move left hand from Space (effort: 3)\nR: Move left hand from B (effort: 4)\nO: Move right hand from K (effort: 2)\nW: Move left hand from R (effort: 2)\nN: Move right hand from O (effort: 4)\nSpace: Move right hand from N (effort: 1)\nShift: Move left hand from W (effort: 3)\nF: Move right hand from Space (effort: 5)\nO: Move right hand from F (effort: 6)\nX: Move left hand from Shift (effort: 2)\nTotal effort: 54")
 
     def testRegString2(self):
         self.assertEqual(
             find_effort_greedy("hello world"),
-            "H: Use left hand\n\
-            E: Use right hand\n\
-            L: Move left hand from H (effort: 3)\n\
-            L: Use left hand again\n\
-            O: Move left hand from L (effort: 1)\n\
-            Space: Move left hand from O (effort: 4)\n\
-            W: Move right hand from E (effort: 1)\n\
-            O: Move left hand from Space (effort: 4)\n\
-            R: Move right hand from W (effort: 2)\n\
-            L: Move left hand from O (effort: 1)\n\
-            D: Move right hand from R (effort: 2)\n\
-            Total effort: 18")
+            "H: Use left hand\nE: Use right hand\nL: Move left hand from H (effort: 3)\nL: Use left hand again\nO: Move left hand from L (effort: 1)\n\Space: Move left hand from O (effort: 4)\nW: Move right hand from E (effort: 1)\nO: Move left hand from Space (effort: 4)\nR: Move right hand from W (effort: 2)\nL: Move left hand from O (effort: 1)\nD: Move right hand from R (effort: 2)\nTotal effort: 18")
 
     def testRegString3(self):
         self.assertEqual(
             find_effort_greedy("qpalzm woskxn"),
-            "Q: Use left hand\n\
-            P: Use right hand\n\
-            A: Move left hand from Q (effort: 1)\n\
-            L: Move right hand from P (effort: 2)\n\
-            Z: Move left hand from A (effort: 2)\n\
-            M: Move right hand from L (effort: 2)\n\
-            Space: Move right hand from M (effort: 1)\n\
-            W: Move left hand from Z (effort: 2)\n\
-            O: Move right hand from Space (effort: 4)\n\
-            S: Move left hand from W (effort: 1)\n\
-            K: Move right hand from O (effort: 2)\n\
-            X: Move left hand from S (effort: 2)\n\
-            N: Move right hand from K (effort: 2)\n\
-            Total effort: 21")
+            "Q: Use left hand\nP: Use right hand\nA: Move left hand from Q (effort: 1)\nL: Move right hand from P (effort: 2)\nZ: Move left hand from A (effort: 2)\nM: Move right hand from L (effort: 2)\nSpace: Move right hand from M (effort: 1)\nW: Move left hand from Z (effort: 2)\nO: Move right hand from Space (effort: 4)\nS: Move left hand from W (effort: 1)\nK: Move right hand from O (effort: 2)\nX: Move left hand from S (effort: 2)\nN: Move right hand from K (effort: 2)\nTotal effort: 21")
 
     def testRegString4(self):
         self.assertEqual(
             find_effort_greedy("Hello there DailyProgrammers"),
-            "Shift: Use left hand\n\
-            H: Use right hand\n\
-            E: Move left hand from Shift (effort: 4)\n\
-            L: Move right hand from H (effort: 3)\n\
-            L: Use right hand again\n\
-            O: Move right hand from L (effort: 1)\n\
-            Space: Move left hand from E (effort: 4)\n\
-            T: Move left hand from Space (effort: 4)\n\
-            H: Move left hand from T (effort: 2)\n\
-            E: Move left hand from H (effort: 4)\n\
-            R: Move left hand from E (effort: 1)\n\
-            E: Move left hand from R (effort: 1)\n\
-            Space: Move left hand from E (effort: 4)\n\
-            Shift: Move right hand from O (effort: 3)\n\
-            D: Move left hand from Space (effort: 3)\n\
-            A: Move left hand from D (effort: 2)\n\
-            I: Move right hand from Shift (effort: 4)\n\
-            L: Move right hand from I (effort: 2)\n\
-            Y: Move right hand from L (effort: 4)\n\
-            Shift: Move left hand from A (effort: 1)\n\
-            P: Move right hand from Y (effort: 4)\n\
-            R: Move left hand from Shift (effort: 5)\n\
-            O: Move right hand from P (effort: 1)\n\
-            G: Move left hand from R (effort: 2)\n\
-            R: Move left hand from G (effort: 2)\n\
-            A: Move left hand from R (effort: 4)\n\
-            M: Move right hand from O (effort: 3)\n\
-            M: Use right hand again\n\
-            E: Move left hand from A (effort: 3)\n\
-            R: Move left hand from E (effort: 1)\n\
-            S: Move left hand from R (effort: 3)\n\
-            Total effort: 75")
+            "Shift: Use left hand\nH: Use right hand\nE: Move left hand from Shift (effort: 4)\nL: Move right hand from H (effort: 3)\nL: Use right hand again\nO: Move right hand from L (effort: 1)\nSpace: Move left hand from E (effort: 4)\nT: Move left hand from Space (effort: 4)\nH: Move left hand from T (effort: 2)\nE: Move left hand from H (effort: 4)\nR: Move left hand from E (effort: 1)\nE: Move left hand from R (effort: 1)\nSpace: Move left hand from E (effort: 4)\nShift: Move right hand from O (effort: 3)\nD: Move left hand from Space (effort: 3)\nA: Move left hand from D (effort: 2)\nI: Move right hand from Shift (effort: 4)\nL: Move right hand from I (effort: 2)\nY: Move right hand from L (effort: 4)\nShift: Move left hand from A (effort: 1)\nP: Move right hand from Y (effort: 4)\nR: Move left hand from Shift (effort: 5)\nO: Move right hand from P (effort: 1)\nG: Move left hand from R (effort: 2)\nR: Move left hand from G (effort: 2)\nA: Move left hand from R (effort: 4)\nM: Move right hand from O (effort: 3)\nM: Use right hand again\nE: Move left hand from A (effort: 3)\nR: Move left hand from E (effort: 1)\nS: Move left hand from R (effort: 3)\nTotal effort: 75")
 
     def testRegString5(self):
         self.assertEqual(
             find_effort_greedy("Ty"), 
-            "Shift: Use left hand\n\
-            T: Use right hand\n\
-            Y: Move right hand from T (effort: 1)\n\
-            Total effort: 1")
+            "Shift: Use left hand\nT: Use right hand\nY: Move right hand from T (effort: 1)\nTotal effort: 1")
 
 def main():
     """Runs all test cases"""
