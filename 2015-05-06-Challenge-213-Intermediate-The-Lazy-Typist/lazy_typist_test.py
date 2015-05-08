@@ -147,15 +147,84 @@ class name_of_pos_tests(unittest.TestCase):
                     ['-', '-', '-', '#', '#', '#', '#', '#', '-', '-']]
         self.assertEqual(lazy_typist.name_of_pos((2, 6), keyboard), "N")
 
+class find_shift_dists_tests(unittest.TestCase):
+    '''Perform unit tests for the find_shift_dists function'''
+    def test_1(self):
+        lds, ls, rds, rs = lazy_typist.find_shift_dists((0, 0), (3, 4))
+        self.assertEqual(lds, 2)
+        self.assertEqual(ls, (2, 0))
+        self.assertEqual(rds, 5)
+        self.assertEqual(rs, (2, 0))
+
+    def test_2(self):
+        lds, ls, rds, rs = lazy_typist.find_shift_dists((2, 1), (1, 6))
+        self.assertEqual(lds, 1)
+        self.assertEqual(ls, (2, 0))
+        self.assertEqual(rds, 4)
+        self.assertEqual(rs, (2, 9))
+
+    def test_3(self):
+        lds, ls, rds, rs = lazy_typist.find_shift_dists((3, 7), (1, 4))
+        self.assertEqual(lds, 3)
+        self.assertEqual(ls, (2, 9))
+        self.assertEqual(rds, 5)
+        self.assertEqual(rs, (2, 0))
+
+class upper_case_handler_tests(unittest.TestCase):
+    '''Perform unit tests for the upper_case_handler function'''
+    def test_1(self):
+        keyboard = [['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
+                    ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', '-'],
+                    ['^', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '-', '^'],
+                    ['-', '-', '-', '#', '#', '#', '#', '#', '-', '-']]
+        r = []
+        effort = 0
+        effort, r, lp, rp = lazy_typist.upper_case_handler('C', effort, keyboard, r, (0, 0), (0, 9))
+        self.assertEqual(effort, 10)
+        self.assertEqual(lp, (2, 0))
+        self.assertEqual(rp, (2, 3))
+        self.assertEqual(r, ["Shift: Move left hand from Q (effort: 2)",
+                             "C: Move right hand from P (effort: 8)"])
+
+    def test_2(self):
+        keyboard = [['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
+                    ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', '-'],
+                    ['^', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '-', '^'],
+                    ['-', '-', '-', '#', '#', '#', '#', '#', '-', '-']]
+        r = []
+        effort = 0
+        effort, r, lp, rp = lazy_typist.upper_case_handler('A', effort, keyboard, r, (2 , 4), (1, 4))
+        self.assertEqual(effort, 8)
+        self.assertEqual(lp, (2, 0))
+        self.assertEqual(rp, (1, 0))
+        self.assertEqual(r, ["Shift: Move left hand from V (effort: 4)",
+                             "A: Move right hand from G (effort: 4)"])
+
+    def test_3(self):
+        keyboard = [['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
+                    ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', '-'],
+                    ['^', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '-', '^'],
+                    ['-', '-', '-', '#', '#', '#', '#', '#', '-', '-']]
+        r = []
+        effort = 0
+        effort, r, lp, rp = lazy_typist.upper_case_handler('B', effort, keyboard, r, (2, 2), (2, 8))
+        self.assertEqual(effort, 4)
+        self.assertEqual(lp, (2, 5))
+        self.assertEqual(rp, (2, 9))
+        self.assertEqual(r, ["Shift: Move right hand from - (effort: 1)",
+                             "B: Move left hand from X (effort: 3)"])
+
 def main():
     """Runs all test cases"""
     # Contains all names of test categories (classes) in string form
     test_class_names = ["find_effort_greedy_tests", "place_hands_tests", 
                         "find_char_pos_tests", "find_dist_tests", 
-                        "name_of_pos_tests"]
+                        "name_of_pos_tests", "find_shift_dists_tests",
+                        "upper_case_handler_tests"]
     # Contains all classes with test cases
     tests = [find_effort_greedy_tests, place_hands_tests, find_char_pos_tests,
-             find_dist_tests, name_of_pos_tests]
+             find_dist_tests, name_of_pos_tests, find_shift_dists_tests,
+             upper_case_handler_tests]
     # Parses through all test classes and and prints them out
     for index in range(0, len(tests)):
         print "\n\n###### Running {0} ######\n".format(test_class_names[index])
