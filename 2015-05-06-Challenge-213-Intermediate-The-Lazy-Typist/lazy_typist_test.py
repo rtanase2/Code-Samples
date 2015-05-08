@@ -33,7 +33,7 @@ class find_effort_greedy_tests(unittest.TestCase):
     def test_sample_string_2(self):
         self.assertEqual(
             lazy_typist.find_effort_greedy("hello world"),
-            "H: Use left hand\nE: Use right hand\nL: Move left hand from H (effort: 3)\nL: Use left hand again\nO: Move left hand from L (effort: 1)\n\Space: Move left hand from O (effort: 4)\nW: Move right hand from E (effort: 1)\nO: Move left hand from Space (effort: 4)\nR: Move right hand from W (effort: 2)\nL: Move left hand from O (effort: 1)\nD: Move right hand from R (effort: 2)\nTotal effort: 18")
+            "H: Use left hand\nE: Use right hand\nL: Move left hand from H (effort: 3)\nL: Use left hand again\nO: Move left hand from L (effort: 1)\nSpace: Move left hand from O (effort: 4)\nW: Move right hand from E (effort: 1)\nO: Move left hand from Space (effort: 4)\nR: Move right hand from W (effort: 2)\nL: Move left hand from O (effort: 1)\nD: Move right hand from R (effort: 2)\nTotal effort: 18")
 
     def test_sample_string_3(self):
         self.assertEqual(
@@ -147,24 +147,24 @@ class name_of_pos_tests(unittest.TestCase):
                     ['-', '-', '-', '#', '#', '#', '#', '#', '-', '-']]
         self.assertEqual(lazy_typist.name_of_pos((2, 6), keyboard), "N")
 
-class find_shift_dists_tests(unittest.TestCase):
-    '''Perform unit tests for the find_shift_dists function'''
+class find_best_dists_tests(unittest.TestCase):
+    '''Perform unit tests for the find_best_dists function'''
     def test_1(self):
-        lds, ls, rds, rs = lazy_typist.find_shift_dists((0, 0), (3, 4))
+        lds, ls, rds, rs = lazy_typist.find_best_dists((0, 0), (3, 4), [(2, 0), (2, 9)])
         self.assertEqual(lds, 2)
         self.assertEqual(ls, (2, 0))
         self.assertEqual(rds, 5)
         self.assertEqual(rs, (2, 0))
 
     def test_2(self):
-        lds, ls, rds, rs = lazy_typist.find_shift_dists((2, 1), (1, 6))
+        lds, ls, rds, rs = lazy_typist.find_best_dists((2, 1), (1, 6), [(2, 0), (2, 9)])
         self.assertEqual(lds, 1)
         self.assertEqual(ls, (2, 0))
         self.assertEqual(rds, 4)
         self.assertEqual(rs, (2, 9))
 
     def test_3(self):
-        lds, ls, rds, rs = lazy_typist.find_shift_dists((3, 7), (1, 4))
+        lds, ls, rds, rs = lazy_typist.find_best_dists((3, 7), (1, 4), [(2, 0), (2, 9)])
         self.assertEqual(lds, 3)
         self.assertEqual(ls, (2, 9))
         self.assertEqual(rds, 5)
@@ -214,17 +214,41 @@ class upper_case_handler_tests(unittest.TestCase):
         self.assertEqual(r, ["Shift: Move right hand from - (effort: 1)",
                              "B: Move left hand from X (effort: 3)"])
 
+class append_move_tests(unittest.TestCase):
+    '''Perform unit tests for the append_move function'''
+    def test_dist_not_zero(self):
+        r = []
+        r = lazy_typist.append_move(r, "left", "A", "B", 5)
+        self.assertEqual(r, ["A: Move left hand from B (effort: 5)"])
+
+    def test_dist_is_zero(self):
+        r = []
+        r = lazy_typist.append_move(r, "right", "A", "A", 0)
+        self.assertEqual(r, ["A: Use right hand again"])
+
+class mangle_name_tests(unittest.TestCase):
+    '''Perform unit tests for the mangle_name function'''
+    def test_shift(self):
+        self.assertEqual(lazy_typist.mangle_name('^'), "Shift")
+
+    def test_space(self):
+        self.assertEqual(lazy_typist.mangle_name('#'), "Space")
+
+    def test_letter(self):
+        self.assertEqual(lazy_typist.mangle_name('z'), "Z")
+
 def main():
     """Runs all test cases"""
     # Contains all names of test categories (classes) in string form
     test_class_names = ["find_effort_greedy_tests", "place_hands_tests", 
                         "find_char_pos_tests", "find_dist_tests", 
-                        "name_of_pos_tests", "find_shift_dists_tests",
-                        "upper_case_handler_tests"]
+                        "name_of_pos_tests", "find_best_dists_tests",
+                        "upper_case_handler_tests", "append_move_tests",
+                        "mangle_name_tests"]
     # Contains all classes with test cases
     tests = [find_effort_greedy_tests, place_hands_tests, find_char_pos_tests,
-             find_dist_tests, name_of_pos_tests, find_shift_dists_tests,
-             upper_case_handler_tests]
+             find_dist_tests, name_of_pos_tests, find_best_dists_tests,
+             upper_case_handler_tests, append_move_tests, mangle_name_tests]
     # Parses through all test classes and and prints them out
     for index in range(0, len(tests)):
         print "\n\n###### Running {0} ######\n".format(test_class_names[index])

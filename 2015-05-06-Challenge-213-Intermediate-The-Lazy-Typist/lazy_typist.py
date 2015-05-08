@@ -22,34 +22,60 @@ def find_effort_greedy(s):
         for c in s[start:len(s)]:
             # If it is upper, you need to use both hands
             if(c.isupper()):
-                total_effort, result, left_pos, right_pos = upper_case_handler(c, total_effort, keyboard, result, left_pos, right_pos)
+                total_effort, result, left_pos, right_pos = upper_case_handler(c, 
+                            total_effort, keyboard, result, left_pos, right_pos)
             # Else, you just need to move one hand
             else:
-                char_pos = find_char_pos(c.upper(), keyboard)
-                right_dist = find_dist(right_pos, char_pos)
-                left_dist = find_dist(left_pos, char_pos)
-                if (min(right_dist, left_dist) == right_dist):
-                    result.append("{0}: Move right hand from {1} (effort: {2})"
-                        .format(c.upper(), keyboard[right_pos[0]][right_pos[1]],
-                            right_dist))
-                    right_pos = char_pos
-                    total_effort += right_dist
+                if c != ' ':
+                    # If it's a letter find the nearest move
+                    char_pos = find_char_pos(c.upper(), keyboard)
+                    right_dist = find_dist(right_pos, char_pos)
+                    left_dist = find_dist(left_pos, char_pos)
+                    if (min(right_dist, left_dist) == left_dist):
+                        result = append_move(result, "left", c, keyboard[left_pos[0]][left_pos[1]], left_dist)
+                        left_pos = char_pos
+                        total_effort += left_dist
+                    else:
+                        result = append_move(result, "right", c, keyboard[right_pos[0]][right_pos[1]], right_dist)
+                        right_pos = char_pos
+                        total_effort += right_dist
                 else:
-                    result.append("{0}: Move left hand from {1} (effort: {2})"
-                        .format(c.upper(), keyboard[left_pos[0]][left_pos[1]],
-                            left_dist))
-                    left_pos = char_pos
-                    total_effort += left_dist
+                    space_array = [(3, 3), (3, 4), (3, 5), (3, 6), (3, 7)]
+                    lds, ls, rds, rs = find_best_dists(left_pos, right_pos, space_array)
+                    if (lds <= rds):
+                        result = append_move(result, "left", '#', keyboard[left_pos[0]][left_pos[1]], lds)
+                        left_pos = ls
+                        total_effort += lds
+                    else:
+                        result = append_move(result, "right", '#', keyboard[right_pos[0]][right_pos[1]], rds)
+                        right_pos = rs
+                        total_effort += rds
+
         result.append("Total effort: {0}".format(total_effort, keyboard))
         return "\n".join(result)
 
-def find_shift_dists(left_pos, right_pos):
-    shift_positions = [(2, 0), (2, 9)]
+def mangle_name(c):
+    '''Takes in c and returns what should be printed depending on the symbol'''
+    if(c == '^' or c == "Shift"):
+        return "Shift"
+    elif(c == '#' or c == "Space"):
+        return "Space"
+    else:
+        return c.upper()
+
+def find_best_dists(left_pos, right_pos, arr):
+    '''Finds the which character is the shortest distance from the left and 
+    right positions
+
+    Keyword arguments:
+    left_pos -- tuple showing left position
+    right_pos -- tuple showing right position
+    arr -- list of all positions of certain character'''
     left_dist_to_shift = 99
     right_dist_to_shift = 99
     left_shift = (0, 0)
     right_shift = (0, 0)
-    for shift_pos in shift_positions:
+    for shift_pos in arr:
         left_dist = find_dist(left_pos, shift_pos)
         right_dist = find_dist(right_pos, shift_pos)
         if left_dist < left_dist_to_shift:
@@ -61,32 +87,42 @@ def find_shift_dists(left_pos, right_pos):
     return left_dist_to_shift, left_shift, right_dist_to_shift, right_shift
 
 def upper_case_handler(c, total_effort, keyboard, result, left_pos, right_pos):
-    left_dist_to_shift, left_shift, right_dist_to_shift, right_shift = find_shift_dists(left_pos, right_pos)
+    '''Function called when c is upper case letter and processes properly'''
+    left_dist_to_shift, left_shift, right_dist_to_shift, right_shift = find_best_dists(left_pos, right_pos, [(2, 0), (2, 9)])
     if (min (left_dist_to_shift, right_dist_to_shift) == left_dist_to_shift):
         # Move left hand to shift and move right to letter
-        result.append("Shift: Move left hand from {0} (effort: {1})"
-            .format(name_of_pos(left_pos, keyboard), 
-                left_dist_to_shift))
+        result = append_move(result, "left", "^", 
+                             name_of_pos(left_pos, keyboard), 
+                             left_dist_to_shift)
         left_pos = left_shift
         total_effort += left_dist_to_shift
-        result.append("{0}: Move right hand from {1} (effort: {2})"
-            .format(c.upper(), name_of_pos(right_pos, keyboard), 
-                find_dist(right_pos, find_char_pos(c.upper(), keyboard))))
+        result = append_move(result, "right", mangle_name(c), 
+                    name_of_pos(right_pos, keyboard), 
+                    find_dist(right_pos, find_char_pos(c.upper(), keyboard)))
         total_effort += find_dist(right_pos, find_char_pos(c.upper(), keyboard))
         right_pos = find_char_pos(c.upper(), keyboard)
     else:
         # Move right hand to shift and move left hand to letter
-        result.append("Shift: Move right hand from {0} (effort: {1})"
-            .format(name_of_pos(right_pos, keyboard), 
-                right_dist_to_shift))
+        result = append_move(result, "right", "^", 
+                             name_of_pos(right_pos, keyboard), 
+                             right_dist_to_shift)
         right_pos = right_shift
         total_effort += right_dist_to_shift
-        result.append("{0}: Move left hand from {1} (effort: {2})"
-            .format(c.upper(), name_of_pos(left_pos, keyboard), 
-                find_dist(left_pos, find_char_pos(c.upper(), keyboard))))
+        result = append_move(result, "left", mangle_name(c), 
+                     name_of_pos(left_pos, keyboard), 
+                     find_dist(left_pos, find_char_pos(c.upper(), keyboard)))
         total_effort += find_dist(left_pos, find_char_pos(c.upper(), keyboard))
         left_pos = find_char_pos(c.upper(), keyboard)
     return total_effort, result, left_pos, right_pos
+
+def append_move(r, which_hand, to, from1, dist):
+    '''Appends the correct string to r based on parameters'''
+    if dist != 0:
+        r.append("{0}: Move {1} hand from {2} (effort: {3})"
+            .format(mangle_name(to), which_hand, mangle_name(from1), dist))
+    else:
+        r.append("{0}: Use {1} hand again".format(mangle_name(to), which_hand))
+    return r
 
 def place_hands(s, r, kb):
     """Places hands in first position"""
