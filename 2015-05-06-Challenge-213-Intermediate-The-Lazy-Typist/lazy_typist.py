@@ -21,24 +21,62 @@ def find_effort_greedy(s):
         start, left_pos, right_pos = place_hands(s, result, keyboard)
         shift_positions = [(2, 0), (2, 9)]
         for c in s[start:len(s)]:
+            # If it is upper, you need to use both hands
             if(c.isupper()):
                 left_dist_to_shift = 999999999999
+                left_shift = (0, 0)
                 right_dist_to_shift = 999999999999
+                right_shift = (0, 0)
                 for shift_pos in shift_positions:
                     left_dist = find_dist(left_pos, shift_pos)
                     right_dist = find_dist(right_pos, shift_pos)
                     if left_dist < left_dist_to_shift:
                         left_dist_to_shift = left_dist
+                        left_shift = shift_pos
                     if right_dist < right_dist_to_shift:
                         right_dist_to_shift = right_dist
+                        right_shift = shift_pos
                 if (min (left_dist_to_shift, right_dist_to_shift) == left_dist_to_shift):
                     # Move left hand to shift and move right to letter
-                    result.append("Shift: Move left hand from {0}".format(name_of_pos(left_pos, keyboard)))
+                    result.append("Shift: Move left hand from {0} (effort: {1})"
+                        .format(name_of_pos(left_pos, keyboard), 
+                            left_dist_to_shift))
+                    left_pos = left_shift
+                    total_effort += left_dist_to_shift
+                    result.append("{0}: Move right hand from {1} (effort: {2})"
+                        .format(c.upper(), name_of_pos(right_pos, keyboard), 
+                            find_dist(right_pos, find_char_pos(c.upper(), keyboard))))
+                    right_pos = find_char_pos(c.upper(), keyboard)
+                    total_effort += find_dist(right_pos, find_char_pos(c.upper(), keyboard))
                 else:
                     # Move right hand to shift and move left hand to letter
-                    pass
+                    result.append("Shift: Move right hand from {0} (effort: {1})"
+                        .format(name_of_pos(right_pos, keyboard), 
+                            right_dist_to_shift))
+                    right_pos = right_shift
+                    total_effort += right_dist_to_shift
+                    result.append("{0}: Move left hand from {1} (effort: {2})"
+                        .format(c.upper(), name_of_pos(left_pos, keyboard), 
+                            find_dist(left_pos, find_char_pos(c.upper(), keyboard))))
+                    left_pos = find_char_pos(c.upper(), keyboard)
+                    total_effort += find_dist(left_pos, find_char_pos(c.upper(), keyboard))
+            # Else, you just need to move one hand
             else:
-                pass
+                char_pos = find_char_pos(c.upper(), keyboard)
+                right_dist = find_dist(right_pos, char_pos)
+                left_dist = find_dist(left_pos, char_pos)
+                if (min(right_dist, left_dist) == right_dist):
+                    result.append("{0}: Move right hand from {1} (effort: {2})"
+                        .format(c.upper(), keyboard[right_pos[0]][right_pos[1]],
+                            right_dist))
+                    right_pos = char_pos
+                    total_effort += right_dist
+                else:
+                    result.append("{0}: Move left hand from {1} (effort: {2})"
+                        .format(c.upper(), keyboard[left_pos[0]][left_pos[1]],
+                            left_dist))
+                    left_pos = char_pos
+                    total_effort += left_dist
         result.append("Total effort: {0}".format(total_effort))
         return "\n".join(result)
 
