@@ -68,7 +68,6 @@ public class HungryPuppiesTests {
         System.out.println((tot-suc) + " out of " + tot + " failed.\n");
         if (suc == tot){
             System.out.println("OK.");
-            successfulTests++;
         } else {
             System.out.println("FAIL.");
         }
