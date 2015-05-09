@@ -91,7 +91,7 @@ def upper_case_handler(c, total_effort, keyboard, result, left_pos, right_pos):
     left_dist_to_shift, left_shift, right_dist_to_shift, right_shift = find_best_dists(left_pos, right_pos, [(2, 0), (2, 9)])
     if (min (left_dist_to_shift, right_dist_to_shift) == left_dist_to_shift):
         # Move left hand to shift and move right to letter
-        result = append_move(result, "left", "^", 
+        result = append_move(result, "left", "Shift", 
                              name_of_pos(left_pos, keyboard), 
                              left_dist_to_shift)
         left_pos = left_shift
@@ -103,7 +103,7 @@ def upper_case_handler(c, total_effort, keyboard, result, left_pos, right_pos):
         right_pos = find_char_pos(c.upper(), keyboard)
     else:
         # Move right hand to shift and move left hand to letter
-        result = append_move(result, "right", "^", 
+        result = append_move(result, "right", "Shift", 
                              name_of_pos(right_pos, keyboard), 
                              right_dist_to_shift)
         right_pos = right_shift
