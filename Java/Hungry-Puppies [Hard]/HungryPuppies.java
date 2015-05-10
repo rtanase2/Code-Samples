@@ -55,16 +55,51 @@ public class HungryPuppies {
                 break;
             }
         }
-        ret[0] = "Calculate the happiness!";
+        ret[0] = calcHappiness(ret[1]);
+        System.out.println(ret[0]);
         return(ret);
+    }
+
+    public static String calcHappiness(String order){
+        System.out.println(order);
+        int happiness = 0;
+        for (int i = 0; i < order.length(); i++){
+            if (i == 0){
+                if ((char)order.charAt(1) < (char)order.charAt(0)){
+                    happiness += 1;
+                }
+                else if ((char)order.charAt(1) != (char)order.charAt(0)){
+                    happiness -= 1;
+                }
+            }
+            else if (i == order.length()-1){
+                if ((char)order.charAt(i) < (char)order.charAt(i-1)){
+                    happiness -= 1;
+                }
+                else if ((char)order.charAt(i) != (char)order.charAt(i-1)){
+                    happiness += 1;
+                }
+            }
+            else {
+                Boolean gTLeft = (char)order.charAt(i) < (char)order.charAt(i-1);
+                Boolean gTRight = (char)order.charAt(i) < (char)order.charAt(i+1);
+                Boolean lTLeft = (char)order.charAt(i) > (char)order.charAt(i-1);
+                Boolean lTRight = (char)order.charAt(i) > (char)order.charAt(i+1);
+                if(gTRight && gTLeft){
+                    happiness += 1;
+                }
+                else if(lTLeft && lTRight){
+                    happiness -= 1;
+                }
+            }
+        }
+        return (Integer.toString(happiness));
     }
 
     public static String sortRemainingTreats(HashMap<Integer, Integer> hm, String curr){
         int[] used = new int[hm.size()];
         int index = 0;
         for (int k : hm.keySet()){
-            System.out.println(curr);
-            System.out.println(k);
             int leftEdge = Integer.parseInt(Character.toString(curr.charAt(0)));
             int rightEdge = Integer.parseInt(Character.toString(curr.charAt(curr.length() - 1)));
             Boolean actionDone = false;
@@ -106,7 +141,6 @@ public class HungryPuppies {
             }
             actionDone = false;
         }
-        System.out.println(curr);
         return(curr);
     }
 
@@ -133,8 +167,6 @@ public class HungryPuppies {
         int rightEdge = Integer.parseInt(Character.toString(curr.charAt(curr.length() - 1)));
         int middleElem = 0; 
         int middleSize = 0;
-        System.out.println(leftEdge);
-        System.out.println(rightEdge);
 
         for (int key : hm.keySet()){
             if(hm.get(key) >= 2){
