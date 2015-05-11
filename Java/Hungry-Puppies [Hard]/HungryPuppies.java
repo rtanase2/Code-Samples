@@ -56,12 +56,10 @@ public class HungryPuppies {
             }
         }
         ret[0] = calcHappiness(ret[1]);
-        System.out.println(ret[0]);
         return(ret);
     }
 
     public static String calcHappiness(String order){
-        System.out.println(order);
         int happiness = 0;
         for (int i = 0; i < order.length(); i++){
             if (i == 0){
@@ -81,10 +79,10 @@ public class HungryPuppies {
                 }
             }
             else {
-                Boolean gTLeft = (char)order.charAt(i) < (char)order.charAt(i-1);
-                Boolean gTRight = (char)order.charAt(i) < (char)order.charAt(i+1);
-                Boolean lTLeft = (char)order.charAt(i) > (char)order.charAt(i-1);
-                Boolean lTRight = (char)order.charAt(i) > (char)order.charAt(i+1);
+                Boolean gTLeft = (char)order.charAt(i) > (char)order.charAt(i-1);
+                Boolean gTRight = (char)order.charAt(i) > (char)order.charAt(i+1);
+                Boolean lTLeft = (char)order.charAt(i) < (char)order.charAt(i-1);
+                Boolean lTRight = (char)order.charAt(i) < (char)order.charAt(i+1);
                 if(gTRight && gTLeft){
                     happiness += 1;
                 }

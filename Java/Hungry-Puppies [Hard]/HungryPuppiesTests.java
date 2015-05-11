@@ -38,6 +38,37 @@ public class HungryPuppiesTests {
         testFindBestOrder();   
         System.out.println("--------------------------------------\n");
         
+        System.out.println("\nRunning calcHappiness tests...");
+        System.out.println("--------------------------------------");
+        testCalcHappiness();   
+        System.out.println("--------------------------------------\n");
+    }
+
+    private static void testCalcHappiness(){
+        int numTests = 5;
+        int numSuccesses = 0;
+
+        System.out.print("Attempting to add up a HLLH pattern... ");
+        String temp = HungryPuppies.calcHappiness("3113");
+        numSuccesses += printStatus(temp.equals("2"));
+
+        System.out.print("Attempting to add up a HL edge... ");
+        temp = HungryPuppies.calcHappiness("3111");
+        numSuccesses += printStatus(temp.equals("1"));
+
+        System.out.print("Attempting to add up 2 same values... ");
+        temp = HungryPuppies.calcHappiness("33");
+        numSuccesses += printStatus(temp.equals("0"));
+
+        System.out.print("Attempting to add up a combination... ");
+        temp = HungryPuppies.calcHappiness("412231133334");
+        numSuccesses += printStatus(temp.equals("2"));
+
+        System.out.print("Attempting to add up a different combination... ");
+        temp = HungryPuppies.calcHappiness("4335335112");
+        numSuccesses += printStatus(temp.equals("4"));
+
+        printResult(numSuccesses, numTests);
     }
 
     private static void testAddAnotherHLLH(){
@@ -105,15 +136,15 @@ public class HungryPuppiesTests {
 
         System.out.println("Attempting to find maximum happiness of 1 1 1 1 1 2 2 3... ");
         temp = HungryPuppies.findBestOrder("1 1 1 1 1 2 2 3");
-        numSuccesses += printStatus(temp[0] == "3" && temp[1] == "21112113");
+        numSuccesses += printStatus(temp[0].equals("3") && temp[1].equals("21112113"));
 
         System.out.println("Attempting to find maximum happiness of 1 2 2 3 3 3 4... ");
         temp = HungryPuppies.findBestOrder("1 2 2 3 3 3 4");
-        numSuccesses += printStatus(temp[0] == "2" && temp[1] == "3223134");
+        numSuccesses += printStatus(temp[0].equals("2") && temp[1].equals("3223134"));
 
         System.out.println("Attempting to find maximum happiness of 1 1 2 3 3 3 3 4 5 5... ");
         temp = HungryPuppies.findBestOrder("1 1 2 3 3 3 3 4 5 5");
-        numSuccesses += printStatus(temp[0] == "4" && temp[1] == "4335335112");
+        numSuccesses += printStatus(temp[0].equals("4") && temp[1].equals("4335335112"));
 
         printResult(numSuccesses, numTests);
     }
